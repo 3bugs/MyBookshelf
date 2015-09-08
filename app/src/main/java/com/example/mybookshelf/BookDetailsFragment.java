@@ -17,10 +17,27 @@ import com.example.mybookshelf.model.Book;
  */
 public class BookDetailsFragment extends Fragment {
 
+    private static final String ARG_BOOK_ID = "book_id";
     private long mBookId;
 
     public BookDetailsFragment() {
         // Required empty public constructor
+    }
+
+    public static BookDetailsFragment newInstance(long bookId) {
+        BookDetailsFragment fragment = new BookDetailsFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_BOOK_ID, bookId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mBookId = getArguments().getLong(ARG_BOOK_ID);
+        }
     }
 
     @Override
@@ -49,11 +66,12 @@ public class BookDetailsFragment extends Fragment {
             descriptionTextView.setText(book.getDescription());
             coverImageView.setImageResource(book.getCoverImageFilename());
         }
-
     }
 
-    public void setBook(long id) {
-        this.mBookId = id;
+/*
+    public void setBook(long bookId) {
+        this.mBookId = bookId;
     }
+*/
 
 }

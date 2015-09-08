@@ -40,6 +40,11 @@ public class Book {
         return mCoverImageFilename;
     }
 
+    @Override
+    public String toString() {
+        return getTitle();
+    }
+
     public static final Book[] books = {
             new Book(
                     "คู่มือเขียนแอพ Android ด้วย Android Studio",
@@ -73,6 +78,5 @@ public class Book {
                             "Lavishly illustrated with over 400 clear diagrams and amusing sketches, this inexpensive edition of the first English translation will offer weeks or even months of stimulating entertainment. It belongs in the library of every puzzlist or lover of recreational mathematics.",
                     R.drawable.the_moscow_puzzles
             )
-
     };
 }
