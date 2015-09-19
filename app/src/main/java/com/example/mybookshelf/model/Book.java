@@ -6,18 +6,24 @@ import com.example.mybookshelf.R;
  * Created by Promlert on 9/7/2015.
  */
 public class Book {
+    private long mId;
     private String mTitle;
     private String mSubTitle;
     private String mIsbn;
     private String mDescription;
-    private int mCoverImageFilename;
+    private String mCoverImageFilename;
 
-    private Book(String title, String subTitle, String isbn, String description, int coverImageFilename) {
+    public Book(long id, String title, String subTitle, String isbn, String description, String coverImageFilename) {
+        this.mId = id;
         this.mTitle = title;
         this.mSubTitle = subTitle;
         this.mIsbn = isbn;
         this.mDescription = description;
         this.mCoverImageFilename = coverImageFilename;
+    }
+
+    public long getId() {
+        return mId;
     }
 
     public String getTitle() {
@@ -36,7 +42,7 @@ public class Book {
         return mDescription;
     }
 
-    public int getCoverImageFilename() {
+    public String getCoverImageFilename() {
         return mCoverImageFilename;
     }
 
@@ -45,6 +51,7 @@ public class Book {
         return getTitle();
     }
 
+/*
     public static final Book[] books = {
             new Book(
                     "คู่มือเขียนแอพ Android ด้วย Android Studio",
@@ -79,4 +86,5 @@ public class Book {
                     R.drawable.the_moscow_puzzles
             )
     };
+*/
 }

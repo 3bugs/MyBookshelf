@@ -1,39 +1,22 @@
 package com.example.mybookshelf;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class DetailsActivity extends AppCompatActivity {
-
-    public static final String KEY_BOOK_INDEX = "book_id";
+public class AddEditBookActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
-
-        Intent intent = getIntent();
-        int bookIndex = intent.getIntExtra(KEY_BOOK_INDEX, 0);
-
-        BookDetailsFragment fragment = BookDetailsFragment.newInstance(bookIndex);
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        //transaction.addToBackStack(null);
-        //transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
+        setContentView(R.layout.activity_add_edit_book);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_details, menu);
+        getMenuInflater().inflate(R.menu.menu_add_edit_book, menu);
         return true;
     }
 

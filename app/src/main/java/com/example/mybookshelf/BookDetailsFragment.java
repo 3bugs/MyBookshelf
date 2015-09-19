@@ -1,15 +1,21 @@
 package com.example.mybookshelf;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.mybookshelf.model.Book;
+import com.example.mybookshelf.model.Books;
 
 
 /**
@@ -17,17 +23,19 @@ import com.example.mybookshelf.model.Book;
  */
 public class BookDetailsFragment extends Fragment {
 
-    private static final String ARG_BOOK_ID = "book_id";
-    private long mBookId;
+    private static final String ARG_BOOK_INDEX = "book_index";
+    private int mBookIndex;
+
+    private Books mBooks;
 
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
-    public static BookDetailsFragment newInstance(long bookId) {
+    public static BookDetailsFragment newInstance(int bookIndex) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_BOOK_ID, bookId);
+        args.putInt(ARG_BOOK_INDEX, bookIndex);
         fragment.setArguments(args);
         return fragment;
     }
@@ -35,9 +43,13 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
-            mBookId = getArguments().getLong(ARG_BOOK_ID);
+            mBookIndex = getArguments().getInt(ARG_BOOK_INDEX);
         }
+
+        mBooks = Books.getInstance(getActivity());
     }
 
     @Override
@@ -59,18 +71,57 @@ public class BookDetailsFragment extends Fragment {
             TextView descriptionTextView = (TextView) view.findViewById(R.id.book_description);
             ImageView coverImageView = (ImageView) view.findViewById(R.id.book_cover_image);
 
-            Book book = Book.books[(int) mBookId];
+            //Book book = Book.books[mBookIndex];
+            //Book book = MainActivity.booksDB.selectAll().get(mBookIndex);
+
+            //Book book = MainActivity.BOOKS.get(mBookIndex);
+            Book book = mBooks.getBook(mBookIndex);
+
             titleTextView.setText(book.getTitle());
             subTitleTextView.setText(book.getSubTitle());
             isbnTextView.setText(book.getIsbn());
             descriptionTextView.setText(book.getDescription());
-            coverImageView.setImageResource(book.getCoverImageFilename());
+
+//            Bitmap coverImageBitmap = Utils.getImageBitmap(getActivity(), book.getCoverImageFilename());
+//            coverImageView.setImageBitmap(coverImageBitmap);
+
+            String imageUrl = "http://192.168.56.1/mybookshelf/images/" + book.getCoverImageFilename();
+            Glide.with(this).load(imageUrl).placeholder(R.mipmap.ic_launcher).into(coverImageView);
         }
     }
 
-/*
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_book_details, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_edit) {
+            Book oldBook = mBooks.getBook(mBookIndex);
+            Book tempBook = new Book(
+                    oldBook.getId(),
+                    "Hello Hello สวัสดี",
+                    oldBook.getSubTitle(),
+                    oldBook.getIsbn(),
+                    oldBook.getDescription(),
+                    oldBook.getCoverImageFilename()
+            );
+            mBooks.editBook(tempBook);
+            return true;
+        } else if (id == R.id.action_delete) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*
     public void setBook(long bookId) {
-        this.mBookId = bookId;
+        this.mBookIndex = bookId;
     }
 */
 

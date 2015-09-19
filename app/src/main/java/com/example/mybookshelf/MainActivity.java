@@ -1,23 +1,34 @@
 package com.example.mybookshelf;
 
-import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telecom.Call;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.mybookshelf.db.BooksDAO;
 import com.example.mybookshelf.model.Book;
+import com.example.mybookshelf.model.Books;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListListener {
+
+    private static final String TAG = "MainActivity";
+
+    //public static final ArrayList<Book> BOOKS = new ArrayList<Book>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //addSampleBookData();
+
         setContentView(R.layout.activity_main);
 
         //listAllBooks();
@@ -28,10 +39,29 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         fragment.setBook(3);
 */
-
     }
 
-    private void listAllBooks() {
+    private void addSampleBookData() {
+        String[] titleArray = getResources().getStringArray(R.array.title_array);
+        String[] subTitleArray = getResources().getStringArray(R.array.subtitle_array);
+        String[] isbnArray = getResources().getStringArray(R.array.isbn_array);
+        String[] descriptionArray = getResources().getStringArray(R.array.description_array);
+        String[] coverImageFilenameArray = getResources().getStringArray(R.array.cover_image_filename_array);
+
+        try {
+            for (int i = 0; i < titleArray.length; i++) {
+                Book book = new Book(i, titleArray[i], subTitleArray[i], isbnArray[i], descriptionArray[i], coverImageFilenameArray[i]);
+                //BOOKS.add(book);
+
+                Utils.copyFileFromAssetsToImagesDir(this, coverImageFilenameArray[i]);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error copying image file from assets to images dir.");
+            e.printStackTrace();
+        }
+    }
+
+/*    private void listAllBooks() {
         String msg = "";
         Book[] books = Book.books;
 
@@ -43,11 +73,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("All Books")
+                .setTitle("All BooksDAO")
                 .setMessage(msg)
                 .setPositiveButton("OK", null)
                 .show();
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, Test.class);
+            startActivity(intent);
             return true;
         }
 
@@ -81,13 +113,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void itemClicked(long id) {
+    public void itemClicked(int index) {
         //BookDetailsFragment fragment = new BookDetailsFragment();
         //fragment.setBook(id);
 
         View fragmentContainer = findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {
-            BookDetailsFragment fragment = BookDetailsFragment.newInstance(id);
+            BookDetailsFragment fragment = BookDetailsFragment.newInstance(index);
 
             FragmentManager fm = getFragmentManager();
             FragmentTransaction transaction = fm.beginTransaction();
@@ -97,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             transaction.commit();
         } else {
             Intent intent = new Intent(this, DetailsActivity.class);
-            intent.putExtra(DetailsActivity.KEY_BOOK_ID, id);
+            intent.putExtra(DetailsActivity.KEY_BOOK_INDEX, index);
             startActivity(intent);
         }
     }
